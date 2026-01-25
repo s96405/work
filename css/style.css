@@ -1,30 +1,31 @@
 /* ===== 全域 ===== */
-*{
-  box-sizing: border-box;
-}
+*{ box-sizing: border-box; }
 
 html, body{
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* 防止任何橫向爆版 */
+  overflow-x: hidden;      /* 防止任何橫向爆版 */
+  background-color: #0080FF;
 }
 
 /* ===== 外層 ===== */
 .wrap{
   max-width: 1200px;
   width: 100%;
-  min-height: 100vh;
   margin: 0 auto;
-  background-color: #0080FF;
-  padding-bottom: 50px;
+  padding-bottom: 20px;
 }
 
 /* ===== Header ===== */
 .header{
   max-width: 800px;
-  margin: 20px auto 10px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
+  align-items: center;
+  gap: 10px;
   padding-top: 10px;
+  margin-bottom: 10px;
 }
 
 .header a{
@@ -39,7 +40,7 @@ html, body{
 
 .header-machine{
   min-width: 180px;
-  padding: 5px;
+  padding: 5px 10px;
   border: 1px solid black;
   box-shadow: 0 0 3px black;
 }
@@ -48,7 +49,6 @@ html, body{
 .header-signout{
   min-width: 80px;
   height: 30px;
-  margin-left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,6 +59,7 @@ html, body{
 /* ===== Scan ===== */
 .Scan{
   max-width: 800px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -92,7 +93,7 @@ html, body{
 }
 
 .order-title{
-  margin: 40px auto;
+  margin: 40px auto 30px;
   font-size: 30px;
   font-weight: 600;
 }
@@ -117,7 +118,7 @@ html, body{
 }
 
 .return-title{
-  margin: 40px auto;
+  margin: 40px auto 30px;
   font-size: 30px;
   font-weight: 600;
 }
@@ -142,8 +143,9 @@ html, body{
   margin-left: auto;
   margin-right: 40px;
 }
-/* ===== 平板（768~1024）===== */
-@media (max-width: 1024px) and (min-width: 521px){
+
+/* ===== 平板（<= 1024 且 > 768）===== */
+@media (max-width: 1024px) and (min-width: 769px){
 
   .wrap{
     padding: 0 20px 30px;
@@ -153,12 +155,8 @@ html, body{
   .Scan,
   .main{
     max-width: 900px;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
   }
 
-  /* header 三個不要擠 */
   .header{
     gap: 12px;
   }
@@ -166,7 +164,6 @@ html, body{
   .header-machine{
     flex: 1;
     min-width: 220px;
-    margin: 0;
     text-align: center;
     padding: 10px;
   }
@@ -175,30 +172,16 @@ html, body{
   .header-signout{
     min-width: 120px;
     height: 44px;
-    margin: 0;
   }
 
-  /* Scan 不要太大 */
   .Scan-input{
     height: 48px;
     font-size: 18px;
   }
 
-  /* 主卡片：平板維持左右兩欄，但縮排更舒服 */
-  .main{
-    gap: 0;
-    border-radius: 16px;
-  }
-
-  .main-order,
-  .main-return{
-    width: 50%;
-  }
-
   .order-title,
   .return-title{
     font-size: 26px;
-    margin-bottom: 24px;
   }
 
   .order-text,
@@ -207,7 +190,6 @@ html, body{
     padding: 0 8% 18px;
   }
 
-  /* 表單欄位稍微放大 */
   .operator,
   .return-text input{
     width: 180px;
@@ -216,43 +198,44 @@ html, body{
   }
 
   .return-btn{
-    height: 54px;
     width: 100px;
+    height: 54px;
     margin-right: 30px;
   }
 }
-/* ========================= */
-/* ===== 手機 / 平板 ===== */
-/* ========================= */
-@media (max-width: 520px){
 
-  /* 關鍵：用 padding 控制整頁，不用 margin 推 */
+/* ===== 平板 & 手機（<= 768）核心：避免爆版、置中、不左右滑 ===== */
+@media (max-width: 768px){
+
   .wrap{
     padding: 0 12px 20px;
   }
 
-  /* Header */
+  .header,
+  .Scan,
+  .main{
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* header 允許換行 + 可縮（關鍵：min-width:0） */
   .header{
     flex-wrap: wrap;
     gap: 8px;
-    margin: 12px 0;
   }
 
   .header-machine{
-    width: 100%;
+    flex: 1 1 100%;
+    min-width: 0;          /* ✅ 防爆版 */
     text-align: center;
+    padding: 10px;
   }
 
   .header-query,
   .header-signout{
-    flex: 1;
-    height: 40px;
-    margin: 0;
-  }
-
-  /* Scan */
-  .Scan{
-    margin: 0;
+    flex: 1 1 0;
+    min-width: 0;          /* ✅ 防爆版 */
+    height: 44px;
   }
 
   .Scan-input{
@@ -260,11 +243,8 @@ html, body{
     font-size: 16px;
   }
 
-  /* 主卡片 */
   .main{
     flex-direction: column;
-    width: 100%;
-    margin: 12px 0;
     border-radius: 14px;
   }
 
@@ -277,6 +257,21 @@ html, body{
     display: none;
   }
 
+  .operator,
+  .return-text input{
+    width: 100%;
+    height: 40px;
+  }
+
+  .return-btn{
+    width: 100%;
+    height: 48px;
+    margin: 16px 0 0;
+  }
+}
+
+/* ===== 手機更小（<= 520）：字體再縮一點 ===== */
+@media (max-width: 520px){
   .order-title,
   .return-title{
     font-size: 24px;
@@ -288,27 +283,4 @@ html, body{
     font-size: 16px;
     padding: 0 12px 20px;
   }
-
-  .operator,
-  .return-text input{
-    width: 100%;
-    height: 40px;
-  }
-
-  .return-btn{
-    width: 100%;
-    height: 48px;
-    margin: 16px 0 0;
-    font-size: 18px;
-  }
-  @media (max-width: 768px) {
-
-  .header,
-  .Scan,
-  .main {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-}
 }
