@@ -1,131 +1,304 @@
+/* ===== 全域 ===== */
+*{
+  box-sizing: border-box;
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* 防止任何橫向爆版 */
+}
+
+/* ===== 外層 ===== */
 .wrap{
-    width: 1200px;
-    min-height: auto;
-    margin: 0 auto;
-    background-color: #0080FF;
-    padding-bottom: 50px;
+  max-width: 1200px;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: #0080FF;
+  padding-bottom: 50px;
 }
+
+/* ===== Header ===== */
 .header{
-    width: 800px;
-    margin: 0 auto;
-    margin-top: 20px;
-    display: flex;
-    margin-bottom: 10px;
+  max-width: 800px;
+  margin: 20px auto 10px;
+  display: flex;
+  padding-top: 10px;
 }
+
 .header a{
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: black;
 }
+
 .header-text{
-    font-weight:500;
-    font-size:20px;
+  font-weight: 500;
+  font-size: 20px;
 }
+
 .header-machine{
-    min-width: 180px;
-    margin: 10px;
-    text-align:left;
-    padding: 5px;
-    margin-top: 20px;
-    border: 1px solid black;
-    box-shadow: 0px 0px 3px black;
+  min-width: 180px;
+  padding: 5px;
+  border: 1px solid black;
+  box-shadow: 0 0 3px black;
 }
-.header-query{
-   border: 1px solid black;
-   min-width: 80px;
-   margin: 0 auto;
-   margin-top: 20px;
-   margin-left: auto;
-   margin-right: 20px;
-   height: 30px;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   box-shadow: 0px 0px 3px black;
-}
+
+.header-query,
 .header-signout{
-   border: 1px solid black;
-   min-width: 80px;
-   margin-top: 20px;
-   height: 30px;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   box-shadow: 0px 0px 3px black;
+  min-width: 80px;
+  height: 30px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  box-shadow: 0 0 3px black;
 }
+
+/* ===== Scan ===== */
 .Scan{
-    width: 800px;
-    margin: 0 auto;
+  max-width: 800px;
+  margin: 0 auto;
 }
+
 .Scan-input{
-    width: 800px;
-    text-align: center;
-    height: 40px;
-    border-radius: 10px;
-    border: 2px solid black;
-    margin-bottom: 20px;
-    box-shadow: 2px 2px 3px black;
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  border-radius: 10px;
+  border: 2px solid black;
+  box-shadow: 2px 2px 3px black;
+  margin-bottom: 20px;
 }
+
+/* ===== 主卡片 ===== */
 .main{
-    width: 800px;
-    border: 1px solid black;
-    margin: 0 auto;
-    background-color: #ffffff;
-    display: flex;
-    border-radius: 20px;
-    box-shadow: 3px 3px 5px black;
-    padding-bottom: 20px;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+  display: flex;
+  border-radius: 20px;
+  box-shadow: 3px 3px 5px black;
+  padding-bottom: 20px;
 }
+
+/* 左：工單 */
 .main-order{
-    width: 400px;
-    display: flex;
-    flex-direction: column;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
 }
+
 .order-title{
-    margin: 0 auto;
-    margin-bottom: 40px;
-    font-size: 30px;
-    font-weight: 600;
-    padding-top: 40px
+  margin: 40px auto;
+  font-size: 30px;
+  font-weight: 600;
 }
+
 .order-text{
-    margin-bottom: 30px;
-    font-size: 20px;
-    padding-left: 10%;
-    padding-bottom: 20px;
+  font-size: 20px;
+  padding: 0 10% 20px;
 }
-.main-return{
-    width: 400px;
-    display: flex;
-    flex-direction: column;
-}
-.return-title{
-    font-size: 30px;
-    padding-top: 40px;
-    font-size: 30px;
-    font-weight: 600;
-    margin: 0 auto; 
-    margin-bottom: 40px;
-}
-.return-text{
-    font-size: 20px;
-    margin-bottom: 50px;
-    padding-left: 10%;
-}
+
+/* 中線 */
 .boder{
-    border: 1px solid #8E8E8E;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  width: 1px;
+  background-color: #8E8E8E;
+  margin: 20px 0;
 }
-.return-btn{
-    width: 80px;
-    height:60px;
-    margin-left: auto;
-    margin-right: 40px;
+
+/* 右：報工 */
+.main-return{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
 }
+
+.return-title{
+  margin: 40px auto;
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.return-text{
+  font-size: 20px;
+  padding: 0 10%;
+  margin-bottom: 40px;
+}
+
 .operator,
 .return-text input{
-    width: 150px;
-    height: 30px;
+  width: 150px;
+  height: 30px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.return-btn{
+  width: 80px;
+  height: 60px;
+  margin-left: auto;
+  margin-right: 40px;
+}
+/* ===== 平板（768~1024）===== */
+@media (max-width: 1024px) and (min-width: 521px){
+
+  .wrap{
+    padding: 0 20px 30px;
+  }
+
+  .header,
+  .Scan,
+  .main{
+    max-width: 900px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* header 三個不要擠 */
+  .header{
+    gap: 12px;
+  }
+
+  .header-machine{
+    flex: 1;
+    min-width: 220px;
+    margin: 0;
     text-align: center;
-    font-size: 20px;
+    padding: 10px;
+  }
+
+  .header-query,
+  .header-signout{
+    min-width: 120px;
+    height: 44px;
+    margin: 0;
+  }
+
+  /* Scan 不要太大 */
+  .Scan-input{
+    height: 48px;
+    font-size: 18px;
+  }
+
+  /* 主卡片：平板維持左右兩欄，但縮排更舒服 */
+  .main{
+    gap: 0;
+    border-radius: 16px;
+  }
+
+  .main-order,
+  .main-return{
+    width: 50%;
+  }
+
+  .order-title,
+  .return-title{
+    font-size: 26px;
+    margin-bottom: 24px;
+  }
+
+  .order-text,
+  .return-text{
+    font-size: 18px;
+    padding: 0 8% 18px;
+  }
+
+  /* 表單欄位稍微放大 */
+  .operator,
+  .return-text input{
+    width: 180px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  .return-btn{
+    height: 54px;
+    width: 100px;
+    margin-right: 30px;
+  }
+}
+/* ========================= */
+/* ===== 手機 / 平板 ===== */
+/* ========================= */
+@media (max-width: 520px){
+
+  /* 關鍵：用 padding 控制整頁，不用 margin 推 */
+  .wrap{
+    padding: 0 12px 20px;
+  }
+
+  /* Header */
+  .header{
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+  }
+
+  .header-machine{
+    width: 100%;
+    text-align: center;
+  }
+
+  .header-query,
+  .header-signout{
+    flex: 1;
+    height: 40px;
+    margin: 0;
+  }
+
+  /* Scan */
+  .Scan{
+    margin: 0;
+  }
+
+  .Scan-input{
+    height: 44px;
+    font-size: 16px;
+  }
+
+  /* 主卡片 */
+  .main{
+    flex-direction: column;
+    width: 100%;
+    margin: 12px 0;
+    border-radius: 14px;
+  }
+
+  .main-order,
+  .main-return{
+    width: 100%;
+  }
+
+  .boder{
+    display: none;
+  }
+
+  .order-title,
+  .return-title{
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .order-text,
+  .return-text{
+    font-size: 16px;
+    padding: 0 12px 20px;
+  }
+
+  .operator,
+  .return-text input{
+    width: 100%;
+    height: 40px;
+  }
+
+  .return-btn{
+    width: 100%;
+    height: 48px;
+    margin: 16px 0 0;
+    font-size: 18px;
+  }
 }

@@ -37,14 +37,14 @@
         function addRow(orderNo, itemName, itemNo, orderNumber , operators, goodNumber,badNumber,reportTime){
         body.insertAdjacentHTML("afterbegin",`
         <tr>
-            <td>${orderNo}</td>
-            <td>${itemName}</td>
-            <td>${itemNo}</td>
-            <td>${orderNumber}</td>
-            <td>${operators}</td>
-            <td>${goodNumber}</td>
-            <td>${badNumber}</td>
-            <td>${reportTime}</td>
+            <td data-label="製令單號">${orderNo}</td>
+            <td data-label="品名">${itemName}</td>
+            <td data-label="品號">${itemNo}</td>
+            <td data-label="訂單數量">${orderNumber}</td>
+            <td data-label="作業人員">${operators}</td>
+            <td data-label="完成數量">${goodNumber}</td>
+            <td data-label="不良數量">${badNumber}</td>
+            <td data-label="報工時間">${reportTime}</td>
         </tr>
         `); 
         }   
