@@ -1,0 +1,131 @@
+.wrap{
+    width: 1200px;
+    min-height: auto;
+    margin: 0 auto;
+    background-color: #0080FF;
+    padding-bottom: 50px;
+}
+.header{
+    width: 800px;
+    margin: 0 auto;
+    margin-top: 20px;
+    display: flex;
+    margin-bottom: 10px;
+}
+.header a{
+    text-decoration: none;
+    color: black;
+}
+.header-text{
+    font-weight:500;
+    font-size:20px;
+}
+.header-machine{
+    min-width: 180px;
+    margin: 10px;
+    text-align:left;
+    padding: 5px;
+    margin-top: 20px;
+    border: 1px solid black;
+    box-shadow: 0px 0px 3px black;
+}
+.header-query{
+   border: 1px solid black;
+   min-width: 80px;
+   margin: 0 auto;
+   margin-top: 20px;
+   margin-left: auto;
+   margin-right: 20px;
+   height: 30px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   box-shadow: 0px 0px 3px black;
+}
+.header-signout{
+   border: 1px solid black;
+   min-width: 80px;
+   margin-top: 20px;
+   height: 30px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   box-shadow: 0px 0px 3px black;
+}
+.Scan{
+    width: 800px;
+    margin: 0 auto;
+}
+.Scan-input{
+    width: 800px;
+    text-align: center;
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid black;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 3px black;
+}
+.main{
+    width: 800px;
+    border: 1px solid black;
+    margin: 0 auto;
+    background-color: #ffffff;
+    display: flex;
+    border-radius: 20px;
+    box-shadow: 3px 3px 5px black;
+    padding-bottom: 20px;
+}
+.main-order{
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+.order-title{
+    margin: 0 auto;
+    margin-bottom: 40px;
+    font-size: 30px;
+    font-weight: 600;
+    padding-top: 40px
+}
+.order-text{
+    margin-bottom: 30px;
+    font-size: 20px;
+    padding-left: 10%;
+    padding-bottom: 20px;
+}
+.main-return{
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+.return-title{
+    font-size: 30px;
+    padding-top: 40px;
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0 auto; 
+    margin-bottom: 40px;
+}
+.return-text{
+    font-size: 20px;
+    margin-bottom: 50px;
+    padding-left: 10%;
+}
+.boder{
+    border: 1px solid #8E8E8E;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.return-btn{
+    width: 80px;
+    height:60px;
+    margin-left: auto;
+    margin-right: 40px;
+}
+.operator,
+.return-text input{
+    width: 150px;
+    height: 30px;
+    text-align: center;
+    font-size: 20px;
+}
