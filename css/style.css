@@ -301,4 +301,14 @@ html, body{
     margin: 16px 0 0;
     font-size: 18px;
   }
+  @media (max-width: 768px) {
+
+  .header,
+  .Scan,
+  .main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+}
 }
