@@ -17,6 +17,7 @@
         <table class="main-table">
             <thead>
                 <tr>
+                    <th>站別</th>
                     <th>製令單號</th>
                     <th>品名</th>
                     <th>品號</th>
@@ -37,6 +38,7 @@
         function addRow(orderNo, itemName, itemNo, orderNumber , operators, goodNumber,badNumber,reportTime){
         body.insertAdjacentHTML("afterbegin",`
         <tr>
+            <td data-label="站別">折床-3120</td>
             <td data-label="製令單號">${orderNo}</td>
             <td data-label="品名">${itemName}</td>
             <td data-label="品號">${itemNo}</td>

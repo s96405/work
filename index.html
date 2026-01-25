@@ -26,7 +26,7 @@
                 <p class="order-text">訂單數量：<span id="orderQtyText">-</span></p>
             </div>
             <div class="boder"></div>
-            <form action="repo.html" method="get" class="main-return" id="reportform">
+            <form action="index.html" method="get" class="main-return" id="reportform">
                 <h2 class="return-title">報工回報</h2>
                 <p class="return-text">作業人員：
                 <select name="operator" id="operator" class="operator">
@@ -54,7 +54,7 @@
             localStorage.setItem('goodNumber',goodNumber); //將完成數量的值存到localStorage
             localStorage.setItem('operator',operator); //將作業人員的值存到localStorage
             localStorage.setItem('badNumber',badNumber); //將不良數量的值存到localStorage
-            window.location.href = "repo.html"; //跳轉到repo.html 
+            window.location.href = "index.html"; //跳轉到repo.html 
         })  
         // 模擬工單資料庫data
          const orders = {
