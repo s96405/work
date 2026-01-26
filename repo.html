@@ -11,6 +11,7 @@
     <div class="wrap">
        <section class="header">
         <p class="return"><a href="index.html">返回</a></p>
+        <button id="clearReportsBtn">清空報工紀錄</button>
        </section>
        <section class="title"><h2 class="title-h2">報工紀錄</h2></section>
        <section class="main">
@@ -21,7 +22,6 @@
                     <th>製令單號</th>
                     <th>品名</th>
                     <th>品號</th>
-                    <th>訂單數量</th>
                     <th>作業人員</th>
                     <th>完成數量</th>
                     <th>不良數量</th>
@@ -34,32 +34,40 @@
        </section>
     </div>
     <script>
+        const clearBtn = document.getElementById('clearReportsBtn');
+        clearBtn.addEventListener('click', function(){
+                localStorage.removeItem('reports');
+                location.reload();
+            });
+
+
+
         const body =document.getElementById('reportBody');
-        function addRow(orderNo, itemName, itemNo, orderNumber , operators, goodNumber,badNumber,reportTime){
+        function addRow(r){
         body.insertAdjacentHTML("afterbegin",`
         <tr>
-            <td data-label="站別">折床-3120</td>
-            <td data-label="製令單號">${orderNo}</td>
-            <td data-label="品名">${itemName}</td>
-            <td data-label="品號">${itemNo}</td>
-            <td data-label="訂單數量">${orderNumber}</td>
-            <td data-label="作業人員">${operators}</td>
-            <td data-label="完成數量">${goodNumber}</td>
-            <td data-label="不良數量">${badNumber}</td>
-            <td data-label="報工時間">${reportTime}</td>
-        </tr>
+            <td data-label="站別">${r.station}</td>
+            <td data-label="製令單號">${r.orderNo}</td>
+            <td data-label="品名">${r.itemName}</td>
+            <td data-label="品號">${r.itemNo}</td>
+            <td data-label="作業人員">${r.operator}</td>
+            <td data-label="完成數量">${r.goodNumber}</td>
+            <td data-label="不良數量">${r.badNumber}</td>
+            <td data-label="報工時間">${r.time}</td>
+      </tr>
         `); 
         }   
        
-        const operator   = localStorage.getItem('operator');
-        const goodNumber = localStorage.getItem('goodNumber');
-        const badNumber  = localStorage.getItem('badNumber');
-        const orderNo    = localStorage.getItem('orderNo');
-        const itemName   = localStorage.getItem('itemName');
-        const itemNo     = localStorage.getItem('itemNo');
-        const orderQty   = localStorage.getItem('orderQty');
-
-        addRow(orderNo, itemName, itemNo, orderQty, operator, goodNumber, badNumber, new Date().toLocaleString());
+        const reports = JSON.parse(localStorage.getItem("reports")) || [];
+        body.innerHTML = "";
+        if (reports.length === 0){
+            body.insertAdjacentHTML("afterbegin",`
+            <tr>
+                <td colspan="8">目前沒有報工紀錄</td>
+            </tr>
+            `);
+        } else {
+           reports.forEach(r => addRow(r));        }
     
     </script>
          

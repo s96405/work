@@ -23,18 +23,11 @@
                 <p class="order-text">製令單號：<span id="orderNoText">-</span></p>
                 <p class="order-text">品名：<span id="itemNameText">-</span></p>
                 <p class="order-text">品號：<span id="itemNoText">-</span></p>
-                <p class="order-text">訂單數量：<span id="orderQtyText">-</span></p>
             </div>
             <div class="boder"></div>
             <form action="index.html" method="get" class="main-return" id="reportform">
                 <h2 class="return-title">報工回報</h2>
-                <p class="return-text">作業人員：
-                <select name="operator" id="operator" class="operator">
-                    <option value="00001">王小明-00001</option>
-                    <option value="00002">李小華-00002</option>
-                    <option value="00003">張大同-00003</option>
-                </select>
-                </p>
+                <p class="return-text">作業人員：王小華-00123</p>
                 <p class="return-text" >完成數量：<input type="number" name="goodnumber" id="goodNumber"></p>
                 <p class="return-text" >不良數量：<input type="number" name="badnumber" id="badNumber"></p>
                 <button type="submit" class="return-btn">送出</button>
@@ -47,14 +40,19 @@
         const form = document.getElementById("reportform") //定義reportform = form
         form.addEventListener("submit", function(a){  //監聽submit事件
             a.preventDefault(); //阻止表單預設行為
-            
-            const operator =document.getElementById('operator').value; //取得作業人員的值
-            const goodNumber = document.getElementById('goodNumber').value; //取得完成數量的值
-            const badNumber  = document.getElementById('badNumber').value; //取得不良數量的值
-            localStorage.setItem('goodNumber',goodNumber); //將完成數量的值存到localStorage
-            localStorage.setItem('operator',operator); //將作業人員的值存到localStorage
-            localStorage.setItem('badNumber',badNumber); //將不良數量的值存到localStorage
-            window.location.href = "index.html"; //跳轉到repo.html 
+            const report = {
+            orderNo: document.getElementById("orderNoText").textContent,
+            itemName: document.getElementById("itemNameText").textContent,
+            itemNo: document.getElementById("itemNoText").textContent,
+            operator: "王小華-00123",
+            goodNumber: document.getElementById("goodNumber").value,
+            badNumber: document.getElementById("badNumber").value,
+            time: new Date().toLocaleString()};
+            //將報工資料存入localStorage
+            let reports = JSON.parse(localStorage.getItem("reports")) || [];//取得現有報工資料，若無則為空陣列
+            reports.push(report);//加入新報工資料
+            localStorage.setItem("reports", JSON.stringify(reports));//存回localStorage
+            form.reset(); //重設表單
         })  
         // 模擬工單資料庫data
          const orders = {
@@ -79,13 +77,11 @@
             document.getElementById("orderNoText").textContent  = o.orderNo; //更新製令單號
             document.getElementById("itemNameText").textContent = o.itemName; //更新品名
             document.getElementById("itemNoText").textContent   = o.itemNo; //更新品號
-            document.getElementById("orderQtyText").textContent = o.orderQty; //
 
             // 也順便存起來（等下送 repo 會用）
             localStorage.setItem("orderNo", o.orderNo);
             localStorage.setItem("itemName", o.itemName);
             localStorage.setItem("itemNo", o.itemNo);
-            localStorage.setItem("orderQty", o.orderQty);
                     }
                     });
 
