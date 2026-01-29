@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>報工紀錄</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/repo.css">
+</head>
+<body>
+  <div class="wrap">
+    <section class="header">
+      <p class="return"><a href="index.html">返回</a></p>
+
+      <!-- admin 才顯示 -->
+      <div id="adminTools" style="display:none;">
+        <button id="exportBtn" type="button">匯出 Excel</button>
+        <a href="admin_users.html">使用者管理</a>
+      </div>
+    </section>
+
+    <section class="title">
+      <h2 class="title-h2">報工紀錄</h2>
+    </section>
+
+    <!-- admin 篩選區 -->
+    <section id="filters" style="display:none;">
+      <div class="filters-grid">
+        <div>
+          <label for="from">起日</label>
+          <input id="from" type="date">
+        </div>
+
+        <div>
+          <label for="to">迄日</label>
+          <input id="to" type="date">
+        </div>
+
+        <div>
+          <label for="station">站別</label>
+          <input id="station" placeholder="例如：板金">
+        </div>
+
+        <div>
+          <label for="operator">作業員</label>
+          <input id="operator" placeholder="例如：Tyler">
+        </div>
+
+        <div>
+          <label for="order_no">工單</label>
+          <input id="order_no" placeholder="例如：5102">
+        </div>
+
+        <div>
+          <label for="item_name">品名</label>
+          <input id="item_name" placeholder="例如：機箱">
+        </div>
+
+        <!-- ✅ 按鈕一組，CSS 會讓它靠右 -->
+        <div class="filters-actions">
+          <button id="searchBtn" type="button">查詢</button>
+          <button id="resetBtn" type="button">清空條件</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="main">
+      <table class="main-table">
+        <thead>
+          <tr>
+            <th>站別</th>
+            <th>製令單號</th>
+            <th>品名</th>
+            <th>品號</th>
+            <th>作業人員</th>
+            <th>完成數量</th>
+            <th>不良數量</th>
+            <th>報工時間</th>
+          </tr>
+        </thead>
+        <tbody id="reportBody"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const body = document.getElementById("reportBody");
+    const adminTools = document.getElementById("adminTools");
+    const filters = document.getElementById("filters");
+
+    const fromEl = document.getElementById("from");
+    const toEl = document.getElementById("to");
+    const stationEl = document.getElementById("station");
+    const operatorEl = document.getElementById("operator");
+    const orderNoEl = document.getElementById("order_no");
+    const itemNameEl = document.getElementById("item_name");
+
+    const searchBtn = document.getElementById("searchBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const exportBtn = document.getElementById("exportBtn");
+
+    let me = null;
+
+    async function apiJson(url, options = {}) {
+      const r = await fetch(url, { credentials: "same-origin", ...options });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.msg || `HTTP ${r.status}`);
+      return data;
+    }
+
+    function renderEmpty(msg = "目前沒有報工紀錄") {
+      body.innerHTML = `<tr><td colspan="8">${msg}</td></tr>`;
+    }
+
+    // ✅ (2) 時間格式化：ISO → 台灣時間 YYYY-MM-DD HH:mm:ss
+    function fmtTime(v) {
+      if (!v) return "";
+      const d = new Date(v);
+      if (Number.isNaN(d.getTime())) return String(v);
+
+      const pad = (n) => String(n).padStart(2, "0");
+      const yyyy = d.getFullYear();
+      const mm = pad(d.getMonth() + 1);
+      const dd = pad(d.getDate());
+      const hh = pad(d.getHours());
+      const mi = pad(d.getMinutes());
+      const ss = pad(d.getSeconds());
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+    }
+
+    function addRow(x) {
+      body.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td data-label="站別">${x.station ?? ""}</td>
+          <td data-label="製令單號">${x.order_no ?? ""}</td>
+          <td data-label="品名">${x.item_name ?? ""}</td>
+          <td data-label="品號">${x.item_no ?? ""}</td>
+          <td data-label="作業人員">${x.operator ?? ""}</td>
+          <td data-label="完成數量">${x.good_qty ?? 0}</td>
+          <td data-label="不良數量">${x.bad_qty ?? 0}</td>
+          <td data-label="報工時間">${fmtTime(x.report_time)}</td>
+        </tr>
+      `);
+    }
+
+    function buildQuery() {
+      const qs = new URLSearchParams();
+      if (fromEl.value) qs.set("from", fromEl.value);
+      if (toEl.value) qs.set("to", toEl.value);
+      if (stationEl.value.trim()) qs.set("station", stationEl.value.trim());
+      if (operatorEl.value.trim()) qs.set("operator", operatorEl.value.trim());
+      if (orderNoEl.value.trim()) qs.set("order_no", orderNoEl.value.trim());
+      if (itemNameEl.value.trim()) qs.set("item_name", itemNameEl.value.trim());
+      return qs.toString();
+    }
+
+    async function loadReports() {
+      body.innerHTML = "";
+      try {
+        const q = (me?.role === "admin") ? buildQuery() : "";
+        const data = await apiJson("/api/reports" + (q ? `?${q}` : ""));
+        const rows = data.rows || [];
+        if (rows.length === 0) return renderEmpty();
+        rows.forEach(addRow);
+      } catch (err) {
+        renderEmpty("讀取失敗：" + err.message);
+      }
+    }
+
+    (async () => {
+      try {
+        const data = await apiJson("/api/me");
+        me = data.user;
+
+        if (me.role === "admin") {
+          adminTools.style.display = "flex";
+          filters.style.display = "block";
+        }
+
+        await loadReports();
+      } catch (err) {
+        location.href = "/login.html";
+      }
+    })();
+
+    searchBtn?.addEventListener("click", loadReports);
+
+    resetBtn?.addEventListener("click", async () => {
+      fromEl.value = "";
+      toEl.value = "";
+      stationEl.value = "";
+      operatorEl.value = "";
+      orderNoEl.value = "";
+      itemNameEl.value = "";
+      await loadReports();
+    });
+
+    exportBtn?.addEventListener("click", () => {
+      if (!me || me.role !== "admin") return;
+      const q = buildQuery();
+      const url = "/api/admin/reports/export.xlsx" + (q ? `?${q}` : "");
+      window.open(url, "_blank");
+    });
+  </script>
+</body>
+</html>

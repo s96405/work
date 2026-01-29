@@ -1,0 +1,269 @@
+/* ======================
+   全域設定
+====================== */
+*{
+  box-sizing: border-box;
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+  background: #0B5ED7;   /* 工業藍 */
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+
+/* ======================
+   外層容器
+====================== */
+.wrap{
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 12px 24px;
+}
+
+/* ======================
+   Header
+====================== */
+.header{
+  max-width: 800px;
+  width: 100%;
+  margin: 10px auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header a{
+  text-decoration: none;
+  color: #000;
+  font-weight: 700;
+}
+
+.header-text{
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.header-machine{
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  text-align: center;
+  border: 1px solid #000;
+  box-shadow: 0 0 3px #000;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.header-query,
+.header-signout{
+  min-width: 80px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+  box-shadow: 0 0 3px #000;
+  background: #fff;
+  border-radius: 8px;
+}
+
+/* ======================
+   Scan
+====================== */
+.Scan{
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.Scan-input{
+  width: 100%;
+  height: 44px;
+  text-align: center;
+  border-radius: 10px;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 3px #000;
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+
+/* ======================
+   主卡片
+====================== */
+.main{
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+  display: flex;
+  border-radius: 18px;
+  box-shadow: 3px 3px 6px #000;
+  padding-bottom: 12px;
+}
+
+/* 左：工單資訊 */
+.main-order{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.order-title{
+  margin: 20px auto 12px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.order-text{
+  font-size: 18px;
+  padding: 0 10% 6px;
+  margin-bottom: 12px;
+}
+
+/* 中線 */
+.boder{
+  width: 1px;
+  background-color: #8E8E8E;
+  margin: 12px 0;
+}
+
+/* 右：報工 */
+.main-return{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.return-title{
+  margin: 20px auto 12px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.return-text{
+  font-size: 18px;
+  padding: 0 10%;
+  margin-bottom: 12px;
+}
+
+.return-text input{
+  width: 160px;
+  height: 34px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.return-btn{
+  width: 110px;
+  height: 48px;
+  margin-left: auto;
+  margin-right: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 10px;
+  border: 2px solid #000;
+  background: #0B5ED7;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ======================
+   平板（<=1024）
+====================== */
+@media (max-width: 1024px){
+  .order-title,
+  .return-title{
+    font-size: 22px;
+  }
+
+  .order-text,
+  .return-text{
+    font-size: 16px;
+    padding: 0 8%;
+  }
+
+  .return-text input{
+    width: 180px;
+    height: 36px;
+  }
+}
+
+/* ======================
+   手機（<=768）
+====================== */
+@media (max-width: 768px){
+  .header{
+    flex-wrap: wrap;
+  }
+
+  .header-machine{
+    flex: 1 1 100%;
+  }
+
+  .header-query,
+  .header-signout{
+    flex: 1 1 0;
+    height: 40px;
+  }
+
+  .main{
+    flex-direction: column;
+    border-radius: 14px;
+  }
+
+  .main-order,
+  .main-return{
+    width: 100%;
+  }
+
+  .boder{
+    display: none;
+  }
+
+  .return-text input{
+    width: 100%;
+    height: 40px;
+  }
+
+  .return-btn{
+    width: 100%;
+    height: 48px;
+    margin: 10px 0 0;
+  }
+}
+
+/* ======================
+   Toast（上方顯示）
+====================== */
+.toast{
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  padding: 12px 22px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .25s ease;
+  z-index: 9999;
+}
+
+.toast.show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.ok{
+  background: rgba(40,167,69,.95);
+}
+
+.toast.err{
+  background: rgba(220,53,69,.95);
+}

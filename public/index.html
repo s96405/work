@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>板金現場報工系統</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+<div class="wrap">
+  <section class="header">
+    <div class="header-machine">
+      <p class="header-text">機台：<span id="stationText">-</span></p>
+    </div>
+    <div class="header-query"><a href="repo.html">報工查詢</a></div>
+    <div class="header-signout"><a href="#" id="logoutBtn">登出</a></div>
+  </section>
+
+  <section class="Scan">
+    <input type="text" id="Scaninput" class="Scan-input" placeholder="請掃描工單條碼">
+  </section>
+
+  <section class="main">
+    <div class="main-order">
+      <h2 class="order-title">工單資訊</h2>
+      <p class="order-text">製令單號：<span id="orderNoText">-</span></p>
+      <p class="order-text">品名：<span id="itemNameText">-</span></p>
+      <p class="order-text">品號：<span id="itemNoText">-</span></p>
+    </div>
+
+    <div class="boder"></div>
+
+    <form class="main-return" id="reportForm">
+      <h2 class="return-title">報工回報</h2>
+      <p class="return-text">作業人員：<span id="operatorText">-</span></p>
+      <p class="return-text">完成數量：
+        <input type="number" id="goodNumber" min="0">
+      </p>
+      <p class="return-text">不良數量：
+        <input type="number" id="badNumber" min="0">
+      </p>
+      <button type="submit" class="return-btn">送出</button>
+    </form>
+  </section>
+</div>
+
+<!-- ✅ Toast（上方顯示） -->
+<div id="toast" class="toast"></div>
+
+<script>
+/* ========= Toast ========= */
+function showToast(msg, type="ok"){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show " + type;
+  setTimeout(() => t.classList.remove("show"), 1500);
+}
+
+/* ========= API Helper ========= */
+async function apiJson(url, options={}){
+  const r = await fetch(url,{
+    credentials:"same-origin",
+    headers:{ "Content-Type":"application/json" },
+    ...options
+  });
+  const data = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(data.msg || "請求失敗");
+  return data;
+}
+
+/* ========= DOM ========= */
+const scanInput = document.getElementById("Scaninput");
+const orderNoText = document.getElementById("orderNoText");
+const itemNameText = document.getElementById("itemNameText");
+const itemNoText = document.getElementById("itemNoText");
+const goodNumberEl = document.getElementById("goodNumber");
+const badNumberEl = document.getElementById("badNumber");
+const operatorText = document.getElementById("operatorText");
+const stationText = document.getElementById("stationText");
+const logoutBtn = document.getElementById("logoutBtn");
+const reportForm = document.getElementById("reportForm");
+
+/* ========= Init 使用者 ========= */
+(async()=>{
+  try{
+    const d = await apiJson("/api/me");
+    operatorText.textContent = d.user.operator || d.user.username;
+    stationText.textContent = d.user.station || "-";
+  }catch{
+    location.href="/login.html";
+  }
+})();
+
+/* ========= 掃碼 ========= */
+scanInput.addEventListener("keydown", async e=>{
+  if(e.key!=="Enter") return;
+  e.preventDefault();
+  try{
+    const d = await apiJson("/api/order/"+encodeURIComponent(scanInput.value.trim()));
+    orderNoText.textContent = d.order.order_no;
+    itemNameText.textContent = d.order.item_name;
+    itemNoText.textContent = d.order.item_no;
+    goodNumberEl.focus();
+  }catch{
+    showToast("查無此工單","err");
+  }
+});
+
+/* ========= 送出報工 ========= */
+reportForm.addEventListener("submit", async e=>{
+  e.preventDefault();
+  if(orderNoText.textContent==="-" ){
+    showToast("請先掃描工單","err"); return;
+  }
+  try{
+    await apiJson("/api/report",{
+      method:"POST",
+      body:JSON.stringify({
+        orderNo:orderNoText.textContent,
+        itemName:itemNameText.textContent,
+        itemNo:itemNoText.textContent,
+        goodNumber:+goodNumberEl.value||0,
+        badNumber:+badNumberEl.value||0
+      })
+    });
+    showToast("✅ 報工成功","ok");
+    goodNumberEl.value=""; badNumberEl.value="";
+    goodNumberEl.focus();
+  }catch{
+    showToast("❌ 報工失敗","err");
+  }
+});
+
+/* ========= 登出 ========= */
+logoutBtn.addEventListener("click", async e=>{
+  e.preventDefault();
+  try{ await apiJson("/api/logout",{method:"POST"});}catch{}
+  location.href="/login.html";
+});
+</script>
+
+</body>
+</html>

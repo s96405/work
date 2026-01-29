@@ -1,0 +1,17 @@
+{
+  "name": "sheet-metal-report",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.6.1",
+    "exceljs": "^4.4.0",
+    "express": "^4.22.1",
+    "express-session": "^1.19.0",
+    "mysql2": "^3.16.2"
+  }
+}

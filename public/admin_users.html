@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>使用者管理</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/admin_users.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="btn" href="repo.html">← 返回報工紀錄</a>
+      <div class="title">使用者管理（Admin）</div>
+      <a class="btn" href="index.html">返回現場</a>
+    </div>
+
+    <div class="card">
+      <h2>新增使用者</h2>
+      <div class="grid">
+        <div>
+          <label>帳號</label>
+          <input id="newUsername" placeholder="例如：tyler2">
+        </div>
+        <div>
+          <label>密碼</label>
+          <input id="newPassword" type="password" placeholder="例如：1234">
+        </div>
+        <div>
+          <label>站別</label>
+          <input id="newStation" placeholder="例如：板金">
+        </div>
+        <div>
+          <label>作業員</label>
+          <input id="newOperator" placeholder="例如：Tyler">
+        </div>
+        <div>
+          <label>角色</label>
+          <select id="newRole">
+            <option value="viewer">viewer（只能看自己今天）</option>
+            <option value="editor">editor（先保留同 viewer）</option>
+            <option value="admin">admin（全部權限）</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button id="createBtn" class="primary">新增</button>
+        </div>
+      </div>
+      <div id="msg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>使用者列表</h2>
+      <div class="hint">可改：站別/作業員/角色/啟用；可重設密碼</div>
+
+      <div class="tableWrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>帳號</th>
+              <th>站別</th>
+              <th>作業員</th>
+              <th>角色</th>
+              <th>啟用</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const tbody = document.getElementById("tbody");
+    const msg = document.getElementById("msg");
+
+    const newUsername = document.getElementById("newUsername");
+    const newPassword = document.getElementById("newPassword");
+    const newStation = document.getElementById("newStation");
+    const newOperator = document.getElementById("newOperator");
+    const newRole = document.getElementById("newRole");
+    const createBtn = document.getElementById("createBtn");
+
+    function showToast(text, type="ok"){
+      const t = document.getElementById("toast");
+      t.textContent = text;
+      t.className = "toast show " + type;
+      setTimeout(()=>t.classList.remove("show"), 1500);
+    }
+
+    async function apiJson(url, options = {}) {
+      const r = await fetch(url, {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        ...options
+      });
+      const data = await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(data.msg || `HTTP ${r.status}`);
+      return data;
+    }
+
+    function rowHtml(u){
+      const activeChecked = Number(u.is_active) === 1 ? "checked" : "";
+      return `
+        <tr data-id="${u.id}">
+          <td>${u.id}</td>
+          <td class="mono">${u.username}</td>
+          <td><input class="in station" value="${u.station ?? ""}"></td>
+          <td><input class="in operator" value="${u.operator ?? ""}"></td>
+          <td>
+            <select class="in role">
+              <option value="viewer" ${u.role==="viewer"?"selected":""}>viewer</option>
+              <option value="editor" ${u.role==="editor"?"selected":""}>editor</option>
+              <option value="admin"  ${u.role==="admin" ?"selected":""}>admin</option>
+            </select>
+          </td>
+          <td style="text-align:center;">
+            <input type="checkbox" class="active" ${activeChecked}>
+          </td>
+          <td class="ops">
+            <button class="save">儲存</button>
+            <button class="resetpw">重設密碼</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    async function loadUsers(){
+      tbody.innerHTML = "";
+      const data = await apiJson("/api/admin/users");
+      const rows = data.rows || [];
+      rows.forEach(u => tbody.insertAdjacentHTML("beforeend", rowHtml(u)));
+    }
+
+    createBtn.addEventListener("click", async ()=>{
+      msg.textContent = "";
+      try{
+        const username = newUsername.value.trim();
+        const password = newPassword.value;
+        const station = newStation.value.trim();
+        const operator = newOperator.value.trim();
+        const role = newRole.value;
+
+        if(!username || !password){
+          msg.textContent = "帳號/密碼必填";
+          return;
+        }
+
+        await apiJson("/api/admin/users", {
+          method:"POST",
+          body: JSON.stringify({ username, password, station, operator, role })
+        });
+
+        showToast("✅ 新增成功", "ok");
+        newUsername.value = "";
+        newPassword.value = "";
+        newStation.value = "";
+        newOperator.value = "";
+        newRole.value = "viewer";
+        await loadUsers();
+      }catch(e){
+        msg.textContent = e.message;
+        showToast("❌ 新增失敗", "err");
+      }
+    });
+
+    tbody.addEventListener("click", async (e)=>{
+      const tr = e.target.closest("tr");
+      if(!tr) return;
+      const id = tr.dataset.id;
+
+      if(e.target.classList.contains("save")){
+        try{
+          const station = tr.querySelector(".station").value;
+          const operator = tr.querySelector(".operator").value;
+          const role = tr.querySelector(".role").value;
+          const is_active = tr.querySelector(".active").checked ? 1 : 0;
+
+          await apiJson(`/api/admin/users/${id}`, {
+            method:"PUT",
+            body: JSON.stringify({ station, operator, role, is_active })
+          });
+
+          showToast("✅ 已儲存", "ok");
+        }catch(err){
+          showToast("❌ 儲存失敗：" + err.message, "err");
+        }
+      }
+
+      if(e.target.classList.contains("resetpw")){
+        const p = prompt("輸入新密碼（會直接覆蓋）");
+        if(!p) return;
+        try{
+          await apiJson(`/api/admin/users/${id}/reset_password`, {
+            method:"POST",
+            body: JSON.stringify({ password: p })
+          });
+          showToast("✅ 已重設密碼", "ok");
+        }catch(err){
+          showToast("❌ 重設失敗：" + err.message, "err");
+        }
+      }
+    });
+
+    // 進頁先確認自己是 admin，不是就踢回去
+    (async ()=>{
+      try{
+        const me = await apiJson("/api/me");
+        if(me.user.role !== "admin") location.href = "/index.html";
+        await loadUsers();
+      }catch{
+        location.href = "/login.html";
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/login.css">
+  <title>登入</title>
+</head>
+<body>
+  <div class="box">
+    <h1>板金現場報工系統 - 登入</h1>
+
+    <!-- 🔑 關鍵：用 form -->
+    <form id="loginForm">
+      <input
+        id="u"
+        name="username"
+        placeholder="帳號"
+        autocomplete="username"
+        required
+      />
+
+      <input
+        id="p"
+        name="password"
+        placeholder="密碼"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
+
+      <!-- 🔑 關鍵：type=submit -->
+      <button id="btn" type="submit">登入</button>
+
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const msg = document.getElementById("msg");
+    const u = document.getElementById("u");
+    const p = document.getElementById("p");
+
+    // 讓帳號 Enter 時自動跳到密碼（現場操作更順）
+    u.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        p.focus();
+      }
+    });
+
+    // 🔑 只聽 submit（Enter / 點擊 都會進來）
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "";
+
+      const username = u.value.trim();
+      const password = p.value;
+
+      if (!username || !password) {
+        msg.textContent = "請輸入帳號與密碼";
+        return;
+      }
+
+      try {
+        const r = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await r.json().catch(() => ({}));
+
+        if (!r.ok || !data.ok) {
+          msg.textContent = data.msg || "登入失敗";
+          return;
+        }
+
+        // ✅ 登入成功
+        location.href = "/index.html";
+      } catch (err) {
+        msg.textContent = "伺服器連線失敗";
+      }
+    });
+  </script>
+</body>
+</html> 
